@@ -1,0 +1,25 @@
+#|
+================================================================
+module: mb-wffs.lisp
+description: STRIPS wffs for the Monkey-and-banana problem
+bugs to vladimir kulyukin in Canvas
+================================================================
+|#
+
+(in-package :user)
+
+(reset-db)
+
+(store '(inst CHAIR1    chair))
+(store '(inst MONKEY1   monkey))
+(store '(inst ROOM1     room))
+(store '(inst BANANA1   banana))
+(store '(inst MID-ROOM1 mid-room))
+(store '(inst DOOR1     door))
+(store '(inst FLOOR1    floor))
+(store '(inst BALL1     ball))
+(store '(at MONKEY1  MID-ROOM1))
+(store '(at CHAIR1   DOOR1))
+(store '(on MONKEY1  FLOOR1))
+(store '(has MONKEY1 BALL1))
+(store '(hungry MONKEY1))

@@ -1,0 +1,57 @@
+#|
+================================================================
+module: sa.wff
+description: STRIPS wffs for the Sussman Anomaly problem.
+bugs to vladimir kulyukin in Canvas
+
+----------------------------------------------------------------
+
+Conceptualization:
+
+1) Objects: blocks a, b, c, table t
+2) Functions: None
+3) Relations: INST, i.e., istance, CLEAR, ON.
+
+-----------------------------------------------------------------
+
+FOPC formalization of Conceptualization:
+
+Constants:
+
+A -- block a
+B -- block b
+C -- block c
+T -- table t
+
+--------------------------------------------------------------
+FOPC WFF        |  Interpretation
+---------------------------------------------------------------
+(inst A block)  |  A is a block, i.e., is an instance of block.
+(inst B block)  |  B is a block.
+(inst C block)  |  C is a block.
+(inst T table)  |  T is a table.
+(clear C)       |  block C is clear
+(clear B)       |  block B is clear
+(on B T)        |  block B is on table T  
+(on A T)        |  block A is on table T
+(on C A)        |  block C is on table T
+
+================================================================
+|#
+
+(in-package :user)
+
+(reset-db)
+
+(store '(inst A block))
+(store '(inst B block))
+(store '(inst C block))
+(store '(inst T table))
+
+(store '(clear C))
+(store '(clear B))
+
+(store '(on B T))
+(store '(on A T))
+(store '(on C A))
+

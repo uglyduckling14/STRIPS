@@ -1,0 +1,68 @@
+#|
+================================================================
+module: sa.op
+description: STRIPS operators for the Sussman Anomaly problem.
+             Operators are primitives of Conceptual Dependency
+             Theory.
+bugs to vladimir kulyukin in Canvas
+================================================================
+|#
+
+(in-package :user)
+
+(reset-op-index)
+
+;;; ptrans block ?b1 from block ?b2 to table ?t
+(def-operator PTRANS
+  :action (PTRANS plant ?b1 ?b2 ?t)
+  :goal   (on ?b1 ?t)
+  :precond ()
+  :filter ((on ?b1 ?b2)
+	   (inst ?b1 block)
+	   (inst ?b2 block)
+	   (inst ?t  table))
+  :add ((on ?b1 ?t) (clear ?b2))
+  :del ((on ?b1 ?b2)))
+
+;;; ptrans block ?b1 from table ?t to block ?b2
+(def-operator PTRANS
+  :action (PTRANS plant ?b1 ?t ?b2)
+  :goal   (on ?b1 ?b2)
+  :precond ()
+  :filter ((on   ?b1 ?t)
+	   (inst ?b1 block)
+	   (inst ?t  table)
+	   (clear ?b1)
+	   (inst ?b2 block))
+  :add ((on ?b1 ?b2))
+  :del ((clear ?b2) (on ?b1 ?t)))
+
+;;; ptrans block ?b1 from block ?b2 to block ?b3
+(def-operator PTRANS
+  :action (PTRANS plant ?b1 ?b2 ?b3)
+  :goal   (on ?b1 ?b3)
+  :precond ()
+  :filter ((on   ?b1 ?b2)
+	   (inst ?b1 block)
+	   (inst ?b2 block)
+	   (inst ?b3 block)
+	   (clear ?b1)
+	   (clear ?b3))
+  :add ((on ?b1 ?b3))
+  :del ((clear ?b3) (on ?b1 ?b2)))
+
+;;; a formalization of Sussman's anomaly
+;;; in terms of preconditions of a STRIPS
+;;; operator.
+(def-operator DONE
+  :action (done)
+  :goal   (sussman-solved)
+  :precond ((on C T) (on B C) (on A B))
+  :add ((sussman-solved))
+  :del ())
+
+
+
+
+  
+

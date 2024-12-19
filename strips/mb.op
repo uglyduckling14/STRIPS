@@ -1,0 +1,99 @@
+#|
+================================================================
+module: mb-ops.lisp
+description: STRIPS operators for the Monkey-and-banana problem
+bugs to vladimir kulyukin in Canvas
+================================================================
+|#
+
+(in-package :user)
+
+(reset-op-index)
+
+;;; (PTRANS (ACTOR ?MONKEY) (OBJECT ?MONKEY) (FROM ?MID-ROOM) (TO ?DOOR))
+;;; iff ?MONKEY   is a monkey
+;;;     ?MID-ROOM is a mid-room
+;;;     ?DOOR     is a door
+(def-operator PTRANS
+  :action (PTRANS ?monkey ?monkey ?mid-room ?door)
+  :goal (at ?monkey ?door)
+  :precond ((at ?monkey ?mid-room)
+	    (on ?monkey ?floor))
+  :filter ((inst ?door   door)
+	   (inst ?mid-room mid-room)
+	   (inst ?monkey monkey)
+	   (inst ?floor  floor))
+  :add ((at ?monkey ?door))
+  :del ((at ?monkey ?mid-room)))
+
+;;; (PTRANS (ACTOR ?MONKEY) (OBJECT ?CHAIR) (FROM ?DOOR) (TO ?MID-ROOM))
+;;; iff ?MONKEY   is a monkey
+;;;     ?MID-ROOM is a mid-room
+;;;     ?DOOR     is a door
+;;;     ?CHAIR    is a chair
+(def-operator PTRANS
+  :action (PTRANS ?monkey ?chair ?door ?mid-room)
+  :goal (at ?chair ?mid-room)
+  :precond ((at ?chair  ?door)
+	    (at ?monkey ?door)
+	    (on ?monkey ?floor)
+	    (empty-handed ?monkey))
+  :filter ((inst ?chair  chair)
+	   (inst ?door   door)
+	   (inst ?monkey monkey)
+	   (inst ?floor  floor))
+  :add ((at ?monkey ?mid-room) (at ?chair ?mid-room))
+  :del ((at ?monkey ?door) (at ?chair ?door)))
+
+(def-operator PTRANS
+  :action (PTRANS ?monkey ?monkey ?floor ?chair)
+  :goal (on ?monkey ?chair)
+  :precond ((at ?chair  ?mid-room)
+	    (at ?monkey ?mid-room)
+	    (on ?monkey ?floor))
+  :filter ((inst ?chair  chair)
+	   (inst ?mid-room mid-room)
+	   (inst ?monkey monkey)
+	   (inst ?floor  floor))
+  :add ((on ?monkey ?chair) (at ?monkey ?banana))
+  :del ((at ?monkey ?mid-room) (on ?monkey ?floor)))
+
+(def-operator GRASP
+  :action (GRASP ?monkey ?banana)
+  :goal (has ?monkey ?banana)
+  :precond ((at ?chair ?mid-room)
+	    (on ?monkey ?chair)
+	    (empty-handed ?monkey))
+  :filter ((inst ?monkey monkey)
+	   (inst ?chair chair)
+	   (inst ?mid-room mid-room)
+	   (inst ?banana  banana))
+  :add ((has ?monkey ?banana))
+  :del ((empty-handed ?monkey)))
+
+;;; the monkey drops the ball.
+(def-operator PTRANS
+  :action (PTRANS ?monkey ?ball ?monkey ?floor)
+  :goal   (empty-handed ?monkey)
+  :precond ((has ?monkey ?ball)) ;;; your code here
+  :filter ((inst ?monkey monkey)
+           (inst ?ball ball)
+           (inst ?floor floor)) ;;; your code here
+  :add ((empty-handed ?monkey)
+	(on ?ball ?floor))
+  :del ((has ?monkey ?ball)))
+
+
+(def-operator INGEST
+  :action (INGEST ?monkey ?banana)
+  :goal   (nourished ?monkey)
+  :precond ((hungry ?monkey)
+            (has ?monkey ?banana)) ;;; your code here
+  :filter ((inst ?monkey monkey)
+           (inst ?banana banana)) ;;; your code here
+  :add ((empty-handed ?monkey)
+	(nourished ?monkey))
+  :del ((has    ?monkey ?banana)
+	(hungry ?monkey)))
+
+  
